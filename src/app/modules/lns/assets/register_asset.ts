@@ -1,6 +1,6 @@
 import { BaseAsset, ApplyAssetContext, ValidateAssetContext } from 'lisk-sdk';
 
-interface TransferAssetProps {
+interface RegisterAssetProps {
 	registerFor: number,
 	name: string;
 	ttl: number; 
@@ -8,7 +8,7 @@ interface TransferAssetProps {
 
 // ttl = time to live
 
-export class RegisterAsset extends BaseAsset <TransferAssetProps> {
+export class RegisterAsset extends BaseAsset <RegisterAssetProps> {
 	public name = 'register';
   public id = 0;
 
@@ -34,7 +34,7 @@ export class RegisterAsset extends BaseAsset <TransferAssetProps> {
 		},
   };
 
-  public validate({ asset }: ValidateAssetContext<TransferAssetProps>): void {
+  public validate({ asset }: ValidateAssetContext<RegisterAssetProps>): void {
     // Validate your asset
 	if (asset.ttl < 60 * 60) {
 		throw new Error('TTL must be more than 1 hour');
@@ -43,6 +43,7 @@ export class RegisterAsset extends BaseAsset <TransferAssetProps> {
 
 	// eslint-disable-next-line @typescript-eslint/require-await
   public async apply({ asset, transaction, stateStore }: ApplyAssetContext<{}>): Promise<void> {
-		throw new Error('Asset "register" apply hook is not implemented.');
+		const asset = createDomain(asset);
+		const account = stateStore.account.get<LnsAccountProps>(transaction.senderAddress);
 	}
 }
