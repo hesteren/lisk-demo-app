@@ -1,13 +1,22 @@
 /* eslint-disable class-methods-use-this */
 
 import {
-    BaseModule,
     AfterBlockApplyContext,
-    TransactionApplyContext,
-    BeforeBlockApplyContext,
-    AfterGenesisBlockApplyContext,
-    // GenesisConfig
+
+
+    AfterGenesisBlockApplyContext, BaseModule,
+
+
+    BeforeBlockApplyContext, TransactionApplyContext
 } from 'lisk-sdk';
+import { RegisterAsset } from "./assets/register_asset";
+
+interface LnsAccountProps {
+    lns: {
+        reverseLookup: Buffer;
+        ownNodes: Buffer[];
+    }
+}
 
 export class LnsModule extends BaseModule {
     public actions = {
@@ -30,12 +39,35 @@ export class LnsModule extends BaseModule {
 		// },
     };
     public name = 'lns';
-    public transactionAssets = [];
+    public transactionAssets = [new RegisterAsset()];
     public events = [
         // Example below
         // 'lns:newBlock',
     ];
     public id = 1000;
+
+    public accountSchema = {
+        $id: '/lisk/own-lns-account',
+        type: 'object',
+        required: ['reverseLookup', 'ownNodes'],
+        properties: {
+            reverseLookup: {
+                fieldNumber: 1,
+                dataType: 'bytes'
+            },
+            ownNodes: {
+                fieldNumber: 2,
+                type: 'array',
+                items: {
+                    dataType: 'bytes'
+                },
+            },
+        },
+        default: {
+            reverseLookup: Buffer.alloc(0),
+            ownNodes: []
+        },
+    };
 
     // public constructor(genesisConfig: GenesisConfig) {
     //     super(genesisConfig);
