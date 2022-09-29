@@ -34,8 +34,11 @@ export class RegisterAsset extends BaseAsset <TransferAssetProps> {
 		},
   };
 
-  public validate({ asset }: ValidateAssetContext<{}>): void {
+  public validate({ asset }: ValidateAssetContext<TransferAssetProps>): void {
     // Validate your asset
+	if (asset.ttl < 60 * 60) {
+		throw new Error('TTL must be more than 1 hour');
+	}
   }
 
 	// eslint-disable-next-line @typescript-eslint/require-await
