@@ -1,6 +1,14 @@
 import { BaseAsset, ApplyAssetContext, ValidateAssetContext } from 'lisk-sdk';
 
-export class RegisterAsset extends BaseAsset {
+interface TransferAssetProps {
+	registerFor: number,
+	name: string;
+	ttl: number; 
+}
+
+// ttl = time to live
+
+export class RegisterAsset extends BaseAsset <TransferAssetProps> {
 	public name = 'register';
   public id = 0;
 
@@ -9,8 +17,21 @@ export class RegisterAsset extends BaseAsset {
     $id: 'lns/register-asset',
 		title: 'RegisterAsset transaction asset for lns module',
 		type: 'object',
-		required: [],
-		properties: {},
+		required: ['registerFor', 'name', 'ttl'],
+		properties: {
+			registerFor: {
+				dataType: 'uint32',
+				fieldNumber: 1
+			},
+			name: {
+				dataType: 'string',
+				fieldNumber: 2
+			},
+			ttl: {
+				dataType: 'uint32',
+				fieldNumber: 3
+			}
+		},
   };
 
   public validate({ asset }: ValidateAssetContext<{}>): void {
